@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Таня Гроттер: Магический контрабас</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+      #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+      #tanya-speech {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,.65);
+        color: #f0e6ff;
+        font: 600 18px/1.5 'Segoe UI', sans-serif;
+        padding: 12px 28px;
+        border-radius: 32px;
+        border: 1px solid rgba(160,100,255,.4);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .4s;
+        max-width: 80vw;
+        text-align: center;
+      }
+      #tanya-speech.visible { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+    <div id="tanya-speech"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
