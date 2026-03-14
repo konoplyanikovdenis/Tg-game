@@ -101,9 +101,9 @@
 
     <script type="module" src="/src/main.js"></script>
 
-    <!-- Karma bar updater (runs after modules load) -->
+    <!-- Karma bar & act label updater — reactive via store.subscribe -->
     <script type="module">
-      import { state } from '/src/state.js'
+      import { store } from '/src/state.js'
       const bar       = document.getElementById('karma-bar')
       const actLabel  = document.getElementById('act-indicator')
       const ACT_NAMES = {
@@ -113,19 +113,18 @@
         4: 'Акт 4: Кульминация',
         5: 'Акт 5: Финал',
       }
-      let prevKarma = null
-      let prevAct   = null
-      setInterval(() => {
-        if (state.karma !== prevKarma) {
-          // karma -100…+100 → bar width 0%…100%
-          bar.style.width = `${(state.karma + 100) / 2}%`
-          prevKarma = state.karma
-        }
-        if (state.currentAct !== prevAct) {
-          actLabel.textContent = ACT_NAMES[state.currentAct] ?? `Акт ${state.currentAct}`
-          prevAct = state.currentAct
-        }
-      }, 500)
+
+      const updateUI = ({ karma, currentAct }) => {
+        // karma -100…+100 → bar width 0%…100%
+        bar.style.width = `${(karma + 100) / 2}%`
+        actLabel.textContent = ACT_NAMES[currentAct] ?? `Акт ${currentAct}`
+      }
+
+      // Apply immediately with the current state snapshot
+      updateUI(store.getState())
+
+      // Subscribe to all future state changes
+      store.subscribe(updateUI)
     </script>
   </body>
 </html>
