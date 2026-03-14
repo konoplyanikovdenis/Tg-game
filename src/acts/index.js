@@ -12,7 +12,7 @@ import { initAct2 } from '@/acts/act2.js'
 import { initAct3 } from '@/acts/act3.js'
 import { initAct4 } from '@/acts/act4.js'
 import { initAct5 } from '@/acts/act5.js'
-import { state } from '@/state.js'
+import { state, resetState } from '@/state.js'
 import { say } from '@/tanya.js'
 import { syncDivision } from '@/division.js'
 
@@ -60,12 +60,8 @@ export const createActManager = (scene) => {
   const start = () => transition(state.currentAct)
 
   const reset = () => {
-    // Reset game state
-    state.karma      = 0
-    state.division   = 'light'
-    state.currentAct = 1
-    state.emotion    = 'neutral'
-    Object.keys(state.questFlags).forEach(k => { state.questFlags[k] = null })
+    // Reset game state via the state manager
+    resetState()
     syncDivision()
     start()
   }
