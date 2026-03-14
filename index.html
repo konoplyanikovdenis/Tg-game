@@ -6,8 +6,10 @@
     <title>Таня Гроттер: Магический контрабас</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: #0d0020; }
       #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+
+      /* ── Tanya speech bubble ── */
       #tanya-speech {
         position: fixed;
         bottom: 32px;
@@ -24,13 +26,106 @@
         transition: opacity .4s;
         max-width: 80vw;
         text-align: center;
+        z-index: 50;
       }
       #tanya-speech.visible { opacity: 1; }
+
+      /* ── Karma progress bar ── */
+      #karma-bar-wrap {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(300px, 70vw);
+        height: 6px;
+        background: rgba(255,255,255,.12);
+        border-radius: 6px;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 50;
+      }
+      #karma-bar {
+        height: 100%;
+        width: 50%;           /* 50% = karma 0; updated via JS */
+        background: linear-gradient(90deg, #f87171 0%, #c084fc 50%, #a3e635 100%);
+        border-radius: 6px;
+        transition: width .6s ease;
+      }
+
+      /* ── Act indicator ── */
+      #act-indicator {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 4px 16px;
+        border-radius: 20px;
+        background: rgba(0,0,0,.55);
+        color: #c084fc;
+        border: 1px solid rgba(192,132,252,.35);
+        font: 600 0.78rem/1.4 'Segoe UI', sans-serif;
+        pointer-events: none;
+        z-index: 200;
+      }
+
+      /* ── Controls hint (bottom-right) ── */
+      #controls-hint {
+        position: fixed;
+        bottom: 24px;
+        right: 18px;
+        color: rgba(240,230,255,.4);
+        font: 400 0.72rem/1.6 'Segoe UI', sans-serif;
+        pointer-events: none;
+        z-index: 50;
+        text-align: right;
+      }
     </style>
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
+
+    <!-- Speech bubble -->
     <div id="tanya-speech"></div>
+
+    <!-- Karma bar -->
+    <div id="karma-bar-wrap"><div id="karma-bar"></div></div>
+
+    <!-- Act indicator -->
+    <div id="act-indicator">Акт 1: Москва</div>
+
+    <!-- Controls -->
+    <div id="controls-hint">
+      WASD / ↑↓←→ — полёт<br>
+      Пробел — вверх &nbsp; Shift — вниз
+    </div>
+
     <script type="module" src="/src/main.js"></script>
+
+    <!-- Karma bar updater (runs after modules load) -->
+    <script type="module">
+      import { state } from '/src/state.js'
+      const bar       = document.getElementById('karma-bar')
+      const actLabel  = document.getElementById('act-indicator')
+      const ACT_NAMES = {
+        1: 'Акт 1: Москва',
+        2: 'Акт 2: Тибидохс',
+        3: 'Акт 3: Школа',
+        4: 'Акт 4: Кульминация',
+        5: 'Акт 5: Финал',
+      }
+      let prevKarma = null
+      let prevAct   = null
+      setInterval(() => {
+        if (state.karma !== prevKarma) {
+          // karma -100…+100 → bar width 0%…100%
+          bar.style.width = `${(state.karma + 100) / 2}%`
+          prevKarma = state.karma
+        }
+        if (state.currentAct !== prevAct) {
+          actLabel.textContent = ACT_NAMES[state.currentAct] ?? `Акт ${state.currentAct}`
+          prevAct = state.currentAct
+        }
+      }, 500)
+    </script>
   </body>
 </html>
